@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import {useRouter} from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { sendMail } from "@/helpers/mailer";
 
 
 export default function LoginPage() {
@@ -35,6 +36,19 @@ export default function LoginPage() {
 
     }
 
+    const onForgotPassword=async ()=>{
+        try {
+
+           await axios.post("/api/users/resetpassword",{email:user.email})
+            setLoading(true);
+        
+        } catch (error:any) {
+        console.log("please click again",error.message);
+        }finally{
+            setLoading(false);
+        }
+    }
+
     return (
        <div className="flex flex-col items-center">
 
@@ -64,6 +78,12 @@ export default function LoginPage() {
          onClick={onLogin}
          >Login here</button>
          <Link href="/signup">Visit Signup page</Link>
+
+         <button className="p-2"
+         onClick={onForgotPassword}
+         >Forgot Password</button>
+
+
 
 
 

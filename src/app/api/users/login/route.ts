@@ -3,6 +3,7 @@ import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { sendMail } from "@/helpers/mailer";
 
 connect();
 
@@ -16,9 +17,13 @@ export async function POST(request:NextRequest){
         //check user exists
       const user= await  User.findOne({email});
 
+
+
       if(!user){
         return NextResponse.json({error:"User doesnot exists. SignUp"},{status:400});
       }
+
+      await sendMail({email,emailType:"RESET",userID:user._id});
 
       //hash password
       const validPassword=await bcryptjs.compare(password,user.password);
